@@ -16,21 +16,22 @@ public class ContactoService implements IContactoService{
 
     @Override
     public List<Contacto> listarContactos() {
-        return List.of();
+        List<Contacto> contactos = crud.findAll();
+        return contactos;
     }
 
     @Override
     public Contacto buscarContactoPorNombre(String nombre) {
-        return null;
+        return crud.findByNombre(nombre).orElse(null);
     }
 
     @Override
     public void guardarContacto(Contacto contacto) {
-
+        crud.save(contacto);
     }
 
     @Override
     public void eliminarContacto(Contacto contacto) {
-
+        crud.delete(contacto);
     }
 }

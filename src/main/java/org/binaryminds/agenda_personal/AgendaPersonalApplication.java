@@ -1,5 +1,6 @@
 package org.binaryminds.agenda_personal;
 
+import org.binaryminds.agenda_personal.dominio.service.IUsuarioService;
 import org.binaryminds.agenda_personal.dominio.service.IContactoService;
 import org.binaryminds.agenda_personal.persistence.entity.Contacto;
 import org.slf4j.Logger;
@@ -17,6 +18,8 @@ public class AgendaPersonalApplication implements CommandLineRunner {
 
 	@Autowired
 	private IContactoService contactoService;
+	@Autowired
+	private IUsuarioService usuarioService;
 	private static final Logger logger = LoggerFactory.getLogger(AgendaPersonalApplication.class);
 	String sl = System.lineSeparator();
 	public static void main(String[] args) {
@@ -24,11 +27,56 @@ public class AgendaPersonalApplication implements CommandLineRunner {
 	}
 	@Override
 	public void run(String... args) throws Exception {
+		autenticarUsuario();
 		agendaPersonalApp();
 	}
 
+	private void autenticarUsuario(){
+		boolean autenticado = false;
+		var consola = new Scanner(System.in);
+		while (!autenticado){
+			logger.info(sl+ "---------------------APLICACION DE AGENDA DE CONTACTOS PERSONAL-------------------------");
+			logger.info("******************************Bienvenido a tu agenda :) **********************************");
+			logger.info(sl+"Inicie sesion en su cuenta o registrese para continuar");
+			logger.info("1. Registrarse");
+			logger.info("2. Iniciar Sesion");
+			logger.info("Elija una opcion: ");
+			String opcion = consola.nextLine();
+			switch (opcion){
+				case "1"-> {
+					logger.info(sl+"****************** REGISTRO DE NUEVO USUARIO ***************************");
+					logger.info(sl+"Ingrese su nombre de usuario: ");
+					String nombreUsuario = consola.nextLine();
+					logger.info(sl+"Ingrese su numero de telefono: ");
+					String telefono = consola.nextLine();
+					logger.info(sl+"Ingrese su correo: ");
+					String correo = consola.nextLine();
+					logger.info(sl+"Ingrese su contrasena: ");
+					String pass = consola.nextLine();
+					usuarioService.registrarUsuario(nombreUsuario, telefono, correo, pass);
+					logger.info(sl+ "Usuario registrado exitosamente, por favor inicie sesion para continuar.");
+				}
+				case "2"-> {
+					logger.info("********************** INICIAR SESION ******************");
+					logger.info(sl+"Ingrese su nombre de usuario: "+sl);
+					String nombreUsuario = consola.nextLine();
+					logger.info("Ingrese su contrasena: ");
+					String pass = consola.nextLine();
+
+					if (usuarioService.login(nombreUsuario, pass)){
+						logger.info(sl+ "Inicio de sesion exitoso, accediendo al sistema"+sl);
+						autenticado = true;
+					} else {
+						logger.info("Usuario o contrasena incorrectos" + sl);
+					}
+				}
+				default -> logger.info("Opcion invalida, por favor elija una opcion del menu " + sl);
+			}
+		}
+	}
+
 	private void agendaPersonalApp(){
-		logger.info("**********************APLICACION DE AGENDA DE CONTACTOS PERSONAL**************************");
+		logger.info(sl+ "**********************APLICACION DE AGENDA DE CONTACTOS PERSONAL**************************"+sl);
 		var salir = false;
 		var consola = new Scanner(System.in);
 		while (!salir){
@@ -45,7 +93,8 @@ public class AgendaPersonalApplication implements CommandLineRunner {
 				3. Agregar un nuevo contacto.
 				4. Modificar contacto existente.
 				5. Borrar contacto de la agenda.
-				6. Salir.
+				6. Cerrar sesion.
+				7. Salir de la aplicacion.
 				Elije una opcion: \s""");
 		var opcion = Integer.parseInt(consola.nextLine());
 		return opcion;
@@ -55,12 +104,12 @@ public class AgendaPersonalApplication implements CommandLineRunner {
 		var salir = false;
 		switch (opcion){
 			case 1->{
-				logger.info(sl+"******LISTA DE TODOS LOS CONTACTOS*****");
+				logger.info(sl+"****** LISTA DE TODOS LOS CONTACTOS *****");
 				List<Contacto> contactos = contactoService.listarContactos();
 				contactos.forEach(contacto -> logger.info(contacto.toString()+sl));
 			}
 			case 2 -> {
-				logger.info(sl+"***BUSCAR CONTACTO POR NOMBRE***"+sl);
+				logger.info(sl+"***** BUSCAR CONTACTO POR NOMBRE *****"+sl);
 				logger.info("Ingrese el nombre: ");
 				var nombre = consola.nextLine();
 				Contacto contacto = contactoService.buscarContactoPorNombre(nombre);
@@ -71,7 +120,7 @@ public class AgendaPersonalApplication implements CommandLineRunner {
 				}
 			}
 			case 3 ->{
-				logger.info(sl+ "*** AGREGAR UN NUEVO CONTACTO ***" + sl);
+				logger.info(sl+ "***** AGREGAR UN NUEVO CONTACTO *****" + sl);
 				logger.info("Ingrese el nombre: ");
 				var nombre = consola.nextLine();
 				logger.info("Ingrese el telefono: ");
@@ -109,7 +158,7 @@ public class AgendaPersonalApplication implements CommandLineRunner {
 
 			}
 			case 5 ->{
-				logger.info(sl+ "*** ELIMINAR CONTACTO ***" + sl );
+				logger.info(sl+ "***** ELIMINAR CONTACTO *****" + sl );
 				logger.info("Ingrese el nombre del contacto a eliminar");
 				var nb = consola.nextLine();
 				var contacto = contactoService.buscarContactoPorNombre(nb);
@@ -121,7 +170,11 @@ public class AgendaPersonalApplication implements CommandLineRunner {
 				}
 			}
 			case 6 ->{
-				logger.info("Cerrando agenda, hasta pronto"+sl+sl);
+				logger.info("Cerrando sesion, hasta pronto"+sl+sl);
+				autenticarUsuario();
+			}
+			case 7 ->{
+				logger.info("Cerrando la aplicacion, hasta pronto");
 				salir=true;
 			}
 			default -> logger.info("Opcion no valida!!!");
