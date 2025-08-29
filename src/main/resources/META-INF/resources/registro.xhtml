@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Registro de Usuario</title>
+</h:head>
+
+<h:body>
+    <h:form>
+        <p:panel header="Registro de Usuario" style="width:350px; margin:auto; margin-top:50px;">
+            <p:messages />
+
+            <p:inputText value="#{registroController.nombreUsuario}" placeholder="Usuario" style="width:100%;" />
+            <p:inputText value="#{registroController.telefono}" placeholder="Teléfono" style="width:100%;" />
+            <p:inputText value="#{registroController.correo}" placeholder="Correo" style="width:100%;" />
+            <p:password value="#{registroController.pass}" placeholder="Contraseña" style="width:100%;" />
+
+            <p:spacer height="10" />
+
+            <p:commandButton value="Registrarse" action="#{registroController.registrar}"
+                             styleClass="p-button-success" style="width:100%;" />
+        </p:panel>
+    </h:form>
+</h:body>
+</html>

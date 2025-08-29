@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<h:html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Agenda - Contactos</title>
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@latest/primeflex.css"/>
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@latest/themes/primeone-dark.css"/>
+    </h:head>
+
+    <h:body>
+        <div class="card">
+            <h:form id="form-contactos">
+                <p:growl id="mensajes" showDetail="true"/>
+
+                <p:menubar>
+                    <p:menuitem value="Cerrar Sesion" icon="pi pi-home" outcome="index.xhtml"
+                    />
+                    <p:menuitem value="Nuevo Contacto" icon="pi pi-plus"
+                                actionListener="#{agendaController.nuevoContacto}"
+                                update=":form-modal:panel-contacto"
+                                oncomplete="PF('dlgContacto').show()"/>
+                </p:menubar>
+
+                <p:dataTable value="#{agendaController.contactos}" var="c" id="tabla-contactos" widgetVar="tablaContactos">
+                    <f:facet name="header">
+                        <h3>Mis Contactos</h3>
+                    </f:facet>
+
+                    <p:column headerText="ID">
+                        <h:outputText value="#{c.codigoContacto}"/>
+                    </p:column>
+                    <p:column headerText="Nombre">
+                        <h:outputText value="#{c.nombre}"/>
+                    </p:column>
+                    <p:column headerText="Teléfono">
+                        <h:outputText value="#{c.telefono}"/>
+                    </p:column>
+                    <p:column headerText="Correo">
+                        <h:outputText value="#{c.correo}"/>
+                    </p:column>
+
+                    <p:column headerText="Acciones">
+                        <p:commandButton value="Editar" icon="pi pi-pencil"
+                                         actionListener="#{agendaController.setContactoSeleccionado(c)}"
+                                         update=":form-modal:panel-contacto"
+                                         oncomplete="PF('dlgContacto').show()"/>
+                        <p:commandButton value="Eliminar" icon="pi pi-trash"
+                                         actionListener="#{agendaController.eliminarContacto(c)}"
+                                         update=":form-contactos:tabla-contactos mensajes"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+            <h:form id="form-modal">
+                <p:dialog header="Contacto" modal="true" widgetVar="dlgContacto" responsive="true">
+                    <p:outputPanel id="panel-contacto" class="ui-fluid">
+                        <div class="field">
+                            <p:outputLabel for="nombre" value="Nombre"/>
+                            <p:inputText id="nombre" value="#{agendaController.contactoSeleccionado.nombre}" required="true"/>
+                        </div>
+                        <div class="field">
+                            <p:outputLabel for="telefono" value="Teléfono"/>
+                            <p:inputText id="telefono" value="#{agendaController.contactoSeleccionado.telefono}"/>
+                        </div>
+                        <div class="field">
+                            <p:outputLabel for="correo" value="Correo"/>
+                            <p:inputText id="correo" value="#{agendaController.contactoSeleccionado.correo}"/>
+                        </div>
+                    </p:outputPanel>
+                    <f:facet name="footer">
+                        <p:commandButton value="Guardar" icon="pi pi-check"
+                                         actionListener="#{agendaController.guardarContacto}"
+                                         update=":form-contactos:tabla-contactos mensajes"
+                                         oncomplete="PF('dlgContacto').hide()"/>
+                        <p:commandButton value="Cancelar" icon="pi pi-times"
+                                         onclick="PF('dlgContacto').hide()" type="button"/>
+                    </f:facet>
+                </p:dialog>
+            </h:form>
+        </div>
+    </h:body>
+</h:html>

@@ -8,7 +8,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(exclude = "usuario")
 @EqualsAndHashCode
 
 public class Contacto {
@@ -19,4 +19,8 @@ public class Contacto {
     private String nombre;
     private String telefono;
     private String correo;
+
+    @ManyToOne
+    @JoinColumn(name = "codigo_usuario")
+    private Usuario usuario;
 }

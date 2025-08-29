@@ -22,8 +22,11 @@ public class UsuarioService implements IUsuarioService{
     }
 
     @Override
-    public boolean login(String nombreUsuario, String pass){
+    public Usuario login(String nombreUsuario, String pass){
         Usuario usuario = crud.findByNombreUsuario(nombreUsuario).orElse(null);
-        return usuario != null && usuario.getPass().equals(pass);
+        if (usuario != null && usuario.getPass().equals(pass)){
+            return usuario;
+        }
+        return null;
     }
 }

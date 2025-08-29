@@ -3,6 +3,7 @@ package org.binaryminds.agenda_personal;
 import org.binaryminds.agenda_personal.dominio.service.IUsuarioService;
 import org.binaryminds.agenda_personal.dominio.service.IContactoService;
 import org.binaryminds.agenda_personal.persistence.entity.Contacto;
+import org.binaryminds.agenda_personal.persistence.entity.Usuario;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,15 +12,17 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
-@SpringBootApplication
+//@SpringBootApplication
 public class AgendaPersonalApplication implements CommandLineRunner {
 
 	@Autowired
 	private IContactoService contactoService;
 	@Autowired
 	private IUsuarioService usuarioService;
+    private Usuario usuarioLogeado;
 	private static final Logger logger = LoggerFactory.getLogger(AgendaPersonalApplication.class);
 	String sl = System.lineSeparator();
 	public static void main(String[] args) {
@@ -31,58 +34,68 @@ public class AgendaPersonalApplication implements CommandLineRunner {
 		agendaPersonalApp();
 	}
 
-	private void autenticarUsuario(){
-		boolean autenticado = false;
+    private void autenticarUsuario() {
+        boolean autenticado = false;
+        var consola = new Scanner(System.in);
 
-		var consola = new Scanner(System.in);
-		while (!autenticado){
-			logger.info(sl+ "---------------------APLICACION DE AGENDA DE CONTACTOS PERSONAL-------------------------");
-			logger.info("****************************** Bienvenido a tu agenda :) *********************************");
-			logger.info(sl+"Inicie sesion en su cuenta o registrese para continuar");
-			logger.info("1. Registrarse");
-			logger.info("2. Iniciar Sesion");
-			logger.info("3. Salir de la aplicacion");
+        while (!autenticado) {
+            logger.info(sl + "---------------------APLICACION DE AGENDA DE CONTACTOS PERSONAL-------------------------");
+            logger.info("****************************** Bienvenido a tu agenda :) *********************************");
+            logger.info(sl + "Inicie sesion en su cuenta o registrese para continuar");
+            logger.info("1. Registrarse");
+            logger.info("2. Iniciar Sesion");
+            logger.info("3. Salir de la aplicacion");
+            logger.info("Elija una opcion: ");
 
-			logger.info("Elija una opcion: ");
-			String opcion = consola.nextLine();
-			switch (opcion){
-				case "1"-> {
-					logger.info(sl+"****************** REGISTRO DE NUEVO USUARIO ***************************");
-					logger.info(sl+"Ingrese su nombre de usuario: ");
-					String nombreUsuario = consola.nextLine();
-					logger.info(sl+"Ingrese su numero de telefono: ");
-					String telefono = consola.nextLine();
-					logger.info(sl+"Ingrese su correo: ");
-					String correo = consola.nextLine();
-					logger.info(sl+"Ingrese su contrasena: ");
-					String pass = consola.nextLine();
-					usuarioService.registrarUsuario(nombreUsuario, telefono, correo, pass);
-					logger.info(sl+ "Usuario registrado exitosamente, por favor inicie sesion para continuar.");
-				}
-				case "2"-> {
-					logger.info("********************** INICIAR SESION ******************");
-					logger.info(sl+"Ingrese su nombre de usuario: "+sl);
-					String nombreUsuario = consola.nextLine();
-					logger.info("Ingrese su contrasena: ");
-					String pass = consola.nextLine();
+            String opcion = consola.nextLine();
 
-					if (usuarioService.login(nombreUsuario, pass)){
-						logger.info(sl+ "Inicio de sesion exitoso, accediendo al sistema"+sl);
-						autenticado = true;
-					} else {
-						logger.info("Usuario o contrasena incorrectos" + sl);
-					}
-				}
-				case "3" ->{
-					logger.info("Cerrando la aplicacion...");
-					System.exit(0);
-				}
-				default -> logger.info("Opcion invalida, por favor elija una opcion del menu " + sl);
-			}
-		}
-	}
+            switch (opcion) {
+                case "1" -> {
+                    logger.info(sl + "****************** REGISTRO DE NUEVO USUARIO ***************************");
+                    logger.info("Ingrese su nombre de usuario: ");
+                    String nombreUsuario = consola.nextLine();
+                    logger.info("Ingrese su numero de telefono: ");
+                    String telefono = consola.nextLine();
+                    logger.info("Ingrese su correo: ");
+                    String correo = consola.nextLine();
+                    logger.info("Ingrese su contrasena: ");
+                    String pass = consola.nextLine();
 
-	private void agendaPersonalApp(){
+                    usuarioService.registrarUsuario(nombreUsuario, telefono, correo, pass);
+                    logger.info(sl + "Usuario registrado exitosamente, por favor inicie sesion para continuar.");
+                }
+
+                case "2" -> {
+                    logger.info("********************** INICIAR SESION ******************");
+                    logger.info("Ingrese su nombre de usuario: ");
+                    String nombreUsuario = consola.nextLine();
+                    logger.info("Ingrese su contrasena: ");
+                    String pass = consola.nextLine();
+
+
+                    Usuario usuario = usuarioService.login(nombreUsuario, pass);
+
+                    if (usuario != null) {
+                        logger.info(sl + "Inicio de sesion exitoso, accediendo al sistema" + sl);
+                        autenticado = true;
+                        usuarioLogeado = usuario;
+                    } else {
+                        logger.info("Usuario o contrasena incorrectos" + sl);
+                    }
+                }
+
+                case "3" -> {
+                    logger.info("Cerrando la aplicacion...");
+                    System.exit(0);
+                }
+
+                default -> logger.info("Opcion invalida, por favor elija una opcion del menu " + sl);
+            }
+        }
+    }
+
+
+    private void agendaPersonalApp(){
 		logger.info(sl+ "********************** APLICACION DE AGENDA DE CONTACTOS PERSONAL **************************"+sl);
 		var salir = false;
 		var consola = new Scanner(System.in);
@@ -112,14 +125,14 @@ public class AgendaPersonalApplication implements CommandLineRunner {
 		switch (opcion){
 			case 1->{
 				logger.info(sl+"\t****** LISTA DE TODOS LOS CONTACTOS *****");
-				List<Contacto> contactos = contactoService.listarContactos();
+				List<Contacto> contactos = contactoService.listarContactosPorUsuario(usuarioLogeado);
 				contactos.forEach(contacto -> logger.info(contacto.toString()+sl));
 			}
 			case 2 -> {
 				logger.info(sl+"\t***** BUSCAR CONTACTO POR NOMBRE *****"+sl);
 				logger.info("Ingrese el nombre: ");
 				var nombre = consola.nextLine();
-				Contacto contacto = contactoService.buscarContactoPorNombre(nombre);
+				Contacto contacto = contactoService.buscarContactoPorNombre(nombre, usuarioLogeado);
 				if (contacto != null){
 					logger.info("Contacto encontrado: "+sl +contacto +sl);
 				}else {
@@ -138,6 +151,7 @@ public class AgendaPersonalApplication implements CommandLineRunner {
 				contacto.setNombre(nombre);
 				contacto.setTelefono(telefono);
 				contacto.setCorreo(correo);
+                contacto.setUsuario(usuarioLogeado);
 				contactoService.guardarContacto(contacto);
 				logger.info("Contacto agregado: " + sl + contacto + sl);
 			}
@@ -145,40 +159,45 @@ public class AgendaPersonalApplication implements CommandLineRunner {
 				logger.info(sl+ "\t***** MODIFICAR CONTACTO EXISTENTE *****" + sl);
 				logger.info("Ingrese el nombre del contacto a editar");
 				var nb = consola.nextLine();
-				Contacto contacto = contactoService.buscarContactoPorNombre(nb);
+                Contacto contacto = contactoService.buscarContactoPorNombre(nb, usuarioLogeado);
 				if (contacto != null){
-					logger.info("Ingrese el nombre: ");
-					var nombre = consola.nextLine();
-					logger.info("Ingrese el telefono: ");
-					var telefono = consola.nextLine();
-					logger.info("Ingrese el correo: ");
-					var correo = consola.nextLine();
-					contacto.setNombre(nombre);
-					contacto.setTelefono(telefono);
-					contacto.setCorreo(correo);
-					contactoService.guardarContacto(contacto);
-					logger.info("Contacto modificado: " + sl + contacto + sl);
-				} else {
-					logger.info("Contacto No encontrado: "+ sl + contacto + sl);
+                    logger.info("Ingrese el nombre: ");
+                    var nombre = consola.nextLine();
+                    logger.info("Ingrese el telefono: ");
+                    var telefono = consola.nextLine();
+                    logger.info("Ingrese el correo: ");
+                    var correo = consola.nextLine();
+                    contacto.setNombre(nombre);
+                    contacto.setTelefono(telefono);
+                    contacto.setCorreo(correo);
+                    contactoService.guardarContacto(contacto);
+                    logger.info("Contacto modificado: " + sl + contacto + sl);
+                } else {
+                    logger.info("Contacto No encontrado: "+ sl + nb + sl);
 
-				}
+                    }
+                }
 
-			}
+
 			case 5 ->{
 				logger.info(sl+ "\t***** ELIMINAR CONTACTO *****" + sl );
 				logger.info("Ingrese el nombre del contacto a eliminar");
 				var nb = consola.nextLine();
-				var contacto = contactoService.buscarContactoPorNombre(nb);
-				if (contacto != null) {
-					contactoService.eliminarContacto(contacto);
-					logger.info("Contacto eliminado de la agenda: " + sl+contacto+sl);
-				} else {
-					logger.info("Contacto NO encontrado: " + sl + contacto + sl);
-				}
-			}
+                Contacto contacto = contactoService.buscarContactoPorNombre(nb, usuarioLogeado);
+				if (contacto !=null){
+                    contactoService.eliminarContacto(contacto);
+                    logger.info("Contacto eliminado de la agenda: " + sl+contacto+sl);
+                } else {
+                    logger.info("Contacto NO encontrado: " + sl + nb + sl);
+                }
+            }
+
+
+
 			case 6 ->{
 				logger.info("Cerrando sesion, hasta pronto"+sl+sl);
-				autenticarUsuario();
+				usuarioLogeado=null;
+                autenticarUsuario();
 			}
 			case 7 ->{
 				logger.info("Cerrando la aplicacion, hasta pronto");

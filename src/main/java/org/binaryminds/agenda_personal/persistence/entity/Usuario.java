@@ -4,6 +4,9 @@ package org.binaryminds.agenda_personal.persistence.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(name = "Usuarios")
 @Data
 @NoArgsConstructor
@@ -22,4 +25,8 @@ public class Usuario {
     private String correo;
     @Column(name = "pass")
     private String pass;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private List<Contacto> contactos = new ArrayList<>();
 }
