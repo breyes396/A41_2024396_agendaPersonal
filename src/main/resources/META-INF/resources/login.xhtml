@@ -10,16 +10,28 @@
 
 <h:body>
     <h:form>
-        <p:panel header="Iniciar Sesión" style="width:300px; margin:auto; margin-top:50px;">
+        <p:panel header="Iniciar Sesión" style="width:600px; margin:auto; margin-top:300px;">
             <p:messages />
+            <div>
+                <p:outputLabel >Ingrese el nombre de usuario</p:outputLabel>
+                <p:spacer height="10" />
+                <p:inputText value="#{loginController.nombreUsuario}" placeholder="Usuario" style="width:100%;" />
+                <p:spacer height="20" />
+            </div>
+            <div>
+                <p:outputLabel >Ingrese su contraseña</p:outputLabel>
+                <p:spacer height="10" />
+                <p:password value="#{loginController.pass}" placeholder="Contraseña" style="width:100%;" />
+            </div>
 
-            <p:inputText value="#{loginController.nombreUsuario}" placeholder="Usuario" style="width:100%;" />
-            <p:password value="#{loginController.pass}" placeholder="Contraseña" style="width:100%;" />
 
-            <p:spacer height="10" />
+            <p:spacer height="20" />
 
             <p:commandButton value="Iniciar Sesión" action="#{loginController.login}"
                              styleClass="p-button-primary" style="width:100%;" />
+            <p:spacer height="20" />
+            <p:commandButton value="Cancelar" action="index.xhtml?faces-redirect=true"
+                             styleClass="p-button-primary" style="width:100%;"/>
         </p:panel>
     </h:form>
 </h:body>

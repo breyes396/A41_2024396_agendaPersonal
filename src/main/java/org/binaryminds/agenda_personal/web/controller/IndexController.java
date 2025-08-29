@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Data
 @ViewScoped
 public class IndexController {
-    private String mensaje = "Bienvenido a la Agenda Personal";
+    private String mensaje = "Bienvenido a tu agenda de contactos personal";
 
     public String irLogin(){
         return "login.xhtml?faces-redirect=true";

@@ -5,30 +5,111 @@
         xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>Agenda De Contactos Personal</title>
+        <style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #333;
+}
+
+.ui-panel {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 80%;
+    max-width: 800px;
+    text-align: center;
+}
+
+
+.ui-outputtext {
+    font-weight: bold;
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+
+.ui-button {
+    width: 100%;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.ui-button-primary {
+    background-color: #007bff;
+    border: none;
+    color: white;
+}
+
+.ui-button-primary:hover {
+    background-color: #0056b3;
+}
+
+.ui-button-success {
+    background-color: #28a745;
+    border: none;
+    color: white;
+}
+
+.ui-button-success:hover {
+    background-color: #218838;
+}
+
+.ui-button-info {
+    background-color: #17a2b8;
+    border: none;
+    color: white;
+}
+
+.ui-button-info:hover {
+    background-color: #138496;
+}
+
+.ui-spacer {
+    margin-bottom: 30px;
+}
+
+        </style>
     </h:head>
     <h:body>
         <h:form>
 
-            <p:panel header="Bienvenido a la Agenda Personal" style="width:400px; margin:auto; margin-top:50px;">
-                <h:outputText value="#{indexController.mensaje}" style="font-weight:bold; font-size:16px;" />
 
-                <p:spacer height="20" />
+            <h:outputText value="#{indexController.mensaje}" style="font-weight:bold; font-size:40px;" />
+            <p:panel  style="width:800px; margin:auto; margin-top:250px;">
+
+                <p:spacer height="30" />
 
                 <p:commandButton value="Iniciar Sesión" action="#{indexController.irLogin}"
                                  icon="pi pi-sign-in" styleClass="p-button-primary" style="width:100%;" />
 
-                <p:spacer height="10" />
+                <p:spacer height="30" />
 
                 <p:commandButton value="Registrarse" action="#{indexController.irRegistro}"
                                  icon="pi pi-user-plus" styleClass="p-button-success" style="width:100%;" />
 
-                <p:spacer height="10" />
+                <p:spacer height="30" />
 
                 <p:commandButton value="Acerca de" action="#{indexController.irAcercaDe}"
                                  icon="pi pi-info-circle" styleClass="p-button-info" style="width:100%;" />
 
+
             </p:panel>
 
+
         </h:form>
+
     </h:body>
 </h:html>

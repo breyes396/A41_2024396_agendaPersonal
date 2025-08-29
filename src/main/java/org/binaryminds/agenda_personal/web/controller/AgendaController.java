@@ -1,6 +1,8 @@
 package org.binaryminds.agenda_personal.web.controller;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import lombok.Data;
 import org.binaryminds.agenda_personal.dominio.service.IContactoService;
@@ -46,6 +48,7 @@ public class AgendaController {
         if (usuarioLogeado != null && contactoSeleccionado != null) {
             contactoSeleccionado.setUsuario(usuarioLogeado);
             contactoService.guardarContacto(contactoSeleccionado);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Contacto agregado"));
             cargarContactos();
         }
     }
@@ -53,6 +56,7 @@ public class AgendaController {
 
     public void eliminarContacto(Contacto contacto) {
         contactoService.eliminarContacto(contacto);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Contacto Eliminado"));
         cargarContactos();
     }
 }

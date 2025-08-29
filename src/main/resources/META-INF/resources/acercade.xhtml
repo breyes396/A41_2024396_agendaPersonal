@@ -5,8 +5,15 @@
       xmlns:p="http://primefaces.org/ui">
 <h:form>
     <h1>Acerca de</h1>
-    <p>#{acercaController.informacion}</p>
-    <h:commandButton value="Volver" action="#{acercaDeController.volverIndex}" />
+    <p>Pagina creada para la gestion de contactos. <br/>
+    Proyecto creado como actividad de aprendiza 1 de curso de Taller II</p>
+    <p>
+        Centro Educativo Técnico Laboral Kinal <br/>
+        Creado por Billy Adrián Reyes López. <br/>
+        Carnet: 2024396
+    </p>
+    <h:commandButton value="Regresar" action="index.xhtml?faces-redirect=true"
+                     styleClass="p-button-primary" style="width:10%;"/>
 </h:form>
 
 </html>

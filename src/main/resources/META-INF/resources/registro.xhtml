@@ -10,17 +10,38 @@
 
 <h:body>
     <h:form>
-        <p:panel header="Registro de Usuario" style="width:350px; margin:auto; margin-top:50px;">
+        <p:panel header="Registro de Usuario" style="width:400px; margin:auto; margin-top:200px;">
             <p:messages />
-
-            <p:inputText value="#{registroController.nombreUsuario}" placeholder="Usuario" style="width:100%;" />
-            <p:inputText value="#{registroController.telefono}" placeholder="Teléfono" style="width:100%;" />
-            <p:inputText value="#{registroController.correo}" placeholder="Correo" style="width:100%;" />
-            <p:password value="#{registroController.pass}" placeholder="Contraseña" style="width:100%;" />
-
-            <p:spacer height="10" />
+            <div>
+                <p:outputLabel >Ingrese el nombre de usuario</p:outputLabel>
+                <p:spacer height="10" />
+                <p:inputText value="#{registroController.nombreUsuario}" placeholder="Usuario" style="width:100%;" />
+                <p:spacer height="10" />
+            </div>
+            <div>
+                <p:outputLabel >Ingrese el numero de telefono</p:outputLabel>
+                <p:spacer height="10" />
+                <p:inputText value="#{registroController.telefono}" placeholder="Teléfono" style="width:100%;" />
+                <p:spacer height="10" />
+            </div>
+            <div>
+                <p:outputLabel >Ingrese su correo electronico</p:outputLabel>
+                <p:spacer height="10" />
+                <p:inputText value="#{registroController.correo}" placeholder="Correo" style="width:100%;" />
+                <p:spacer height="10" />
+            </div>
+            <div>
+                <p:outputLabel >Ingrese su contraseña</p:outputLabel>
+                <p:spacer height="10" />
+                <p:password value="#{registroController.pass}" placeholder="Contraseña" style="width:100%;" />
+            </div>
+            <p:spacer height="25" />
 
             <p:commandButton value="Registrarse" action="#{registroController.registrar}"
+                             styleClass="p-button-success" style="width:100%;" />
+            <p:spacer height="25" />
+
+            <p:commandButton value="Cancelar" action="index.xhtml?faces-redirect=true"
                              styleClass="p-button-success" style="width:100%;" />
         </p:panel>
     </h:form>
